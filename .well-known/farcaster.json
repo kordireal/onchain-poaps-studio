@@ -1,0 +1,14 @@
+{
+  "miniapp": {
+    "version": "1",
+    "name": "Onchain POAPs Studio",
+    "iconUrl": "https://kordireal.github.io/onchain-poaps-studio/icon.png",
+    "homeUrl": "https://kordireal.github.io/onchain-poaps-studio/",
+    "buttonTitle": "Open Studio",
+    "description": "Create, distribute and mint fully onchain POAPs — public, allowlist and signature minting with QR distribution. Zero dependencies, everything onchain.",
+    "splashImageUrl": "https://kordireal.github.io/onchain-poaps-studio/icon.png",
+    "splashBackgroundColor": "#0b0e14",
+    "primaryCategory": "social",
+    "tags": ["poap", "onchain", "base", "events", "attendance"]
+  }
+}
