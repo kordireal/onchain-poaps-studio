@@ -2562,13 +2562,13 @@ function parseMetaUri(uri){if(uri.startsWith('data:application/json;base64,')){r
 async function balanceOf(addr,id){const r=await call(state.contract,'0x'+SEL_BAL+addr.replace(/^0x/,'').toLowerCase().padStart(64,'0')+u256(id));return decUint(r)>=1n}
 async function hasClaimed(id,addr){const r=await call(state.contract,'0x'+SEL_CLAIMED+u256(id)+addr.replace(/^0x/,'').toLowerCase().padStart(64,'0'));return decUint(r)===1n}
 
-/* ---- signature message (matches contract: keccak256(packed(eventId, chainId, sender))) ---- */
+/* ---- signature message (matches contract: personal_sign over keccak256(packed(eventId, chainId, sender))) ---- */
 function sigMessage(eventId,chainId,addr){
   const a=new Uint8Array(84);
   a.set(fromHex(u256(eventId)),0);
   a.set(fromHex(u256(chainId)),32);
   a.set(addrBytes20(addr),64);
-  return hexOf(a);
+  return hexOf(keccak256(a)); // sign the 32-byte digest; wallet's EIP-191 prefix then matches the contract's toEthSignedMessageHash
 }
 async function personalSign(hexMsg){const eth=await ensureProvider();return eth.request({method:'personal_sign',params:['0x'+hexMsg,state.account]})}
 
@@ -2799,7 +2799,7 @@ async function viewEvent(id,q){
       <h3>Public mint</h3>
       <p class="sub" style="font-size:13px">${ev.isPublic?'Open to anyone, one per address.':'Currently closed. The creator can open it during the first 30 days.'}</p>
       <div style="margin:12px 0"><span class="pill ${ctrlWin.cls}">creator window: ${ctrlWin.txt}</span></div>
-      <button id="m_pub" ${(!ev.isPublic||claimed||!state.account)?'disabled':''}>${claimed?'Already minted ✓':(ev.isPublic?'Mint POAP':'Connect to mint')}</button>
+      <button id="m_pub" ${(!ev.isPublic||claimed||!state.account)?'disabled':''}>${claimed?'Already minted ✓':(ev.isPublic?'Mint POAP':(state.account?'Public mint closed':'Connect to mint'))}</button>
     </div>
     <div class="card">
       <h3>Allowlist mint</h3>
